@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'auth.dart';
 
 class LoginPage extends StatefulWidget {
+  LoginPage({this.auth});
+  final BaseAuth auth;
   @override
   State<StatefulWidget> createState() => new _LoginPageState();
 }
@@ -35,14 +38,12 @@ class _LoginPageState extends State<LoginPage> {
     if(validateAndSave()) {
       try {
         if (_formType == FormType.login) {
-          AuthResult res = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _mail, password: _password);
-          FirebaseUser user = res.user;
-          print('Signed in: ${user.uid}');
+          String userId = await widget.auth.signInWithEmailAndPassword(_mail, _password);
+          print('Signed in: $userId');
         }
         else {
-          AuthResult res = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _mail, password: _password);
-          FirebaseUser user = res.user;
-          print('Registered user: ${user.uid}');
+          String userId = await widget.auth.createUserWithEmailAndPassword(_mail, _password);
+          print('Registered user: $userId');
         }
 
       }
